@@ -63,8 +63,17 @@ async function callAI(prompt, provider, options = {}, isJsonFormat = false) {
     return data.content[0].text || "";
   } else if (provider === 'custom') {
     const apiKey = process.env.CUSTOM_API_KEY || process.env.GROQ_API_KEY || customApiKey;
-    const baseUrl = process.env.CUSTOM_BASE_URL || customBaseUrl || 'https://api.openai.com/v1';
-    const model = customModel || process.env.CUSTOM_MODEL || 'gpt-4o-mini';
+    let baseUrl = process.env.CUSTOM_BASE_URL || customBaseUrl || 'https://api.openai.com/v1';
+    
+    if (apiKey && apiKey.startsWith('gsk_') && baseUrl === 'https://api.openai.com/v1') {
+      baseUrl = 'https://api.groq.com/openai/v1';
+    }
+
+    let model = customModel || process.env.CUSTOM_MODEL || 'gpt-4o-mini';
+    if (baseUrl === 'https://api.groq.com/openai/v1' && model === 'gpt-4o-mini') {
+        model = 'llama3-70b-8192'; // default groq model if not specified
+    }
+
     if (!apiKey) throw new Error(`Custom/Groq API Key belum dikonfigurasi`);
     const res = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',

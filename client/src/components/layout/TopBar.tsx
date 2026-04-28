@@ -23,7 +23,7 @@ export const TopBar: React.FC = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [backendOk, setBackendOk] = useState<boolean | null>(null);
 
-  const title = PAGE_TITLES[location.pathname] || 'SIRUP Analyzer';
+  const title = PAGE_TITLES[location.pathname] || 'Portal AI Bapperida';
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);

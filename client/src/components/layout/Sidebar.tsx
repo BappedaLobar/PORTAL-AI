@@ -51,8 +51,8 @@ export const Sidebar: React.FC = () => {
             <ShieldAlert size={20} color="white" />
           </div>
           <div>
-            <div className="sidebar-logo-title">SIRUP Analyzer</div>
-            <div className="sidebar-logo-sub">Audit Belanja Pengadaan</div>
+            <div className="sidebar-logo-title">Portal AI Bapperida</div>
+            <div className="sidebar-logo-sub">Kabupaten Lombok Barat</div>
           </div>
         </div>
 
@@ -110,7 +110,7 @@ export const Sidebar: React.FC = () => {
         color: 'var(--text-muted)',
         textAlign: 'center'
       }}>
-        SIRUP Analyzer v1.0 · Powered by Gemini AI
+        Portal AI Bapperida v1.0 · Powered by AI
       </div>
     </aside>
   );

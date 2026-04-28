@@ -42,14 +42,11 @@ export const Sidebar: React.FC = () => {
       {/* Logo */}
       <div className="sidebar-logo">
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: 36, height: 36,
-            background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
-            borderRadius: 10,
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            <ShieldAlert size={20} color="white" />
-          </div>
+          <img 
+            src="/logo-lobar.png" 
+            alt="Logo Lombok Barat" 
+            style={{ width: 36, height: 36, objectFit: 'contain' }} 
+          />
           <div>
             <div className="sidebar-logo-title">Portal AI Bapperida</div>
             <div className="sidebar-logo-sub">Kabupaten Lombok Barat</div>

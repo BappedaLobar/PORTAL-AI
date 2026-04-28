@@ -32,6 +32,17 @@ const NAV_ITEMS = [
   }
 ];
 
+const ICON_STYLES: Record<string, { bg: string, color: string, border: string }> = {
+  '/': { bg: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#FFFFFF', border: 'rgba(59,130,246,0.5)' },
+  '/upload': { bg: 'linear-gradient(135deg, #10B981, #059669)', color: '#FFFFFF', border: 'rgba(16,185,129,0.5)' },
+  '/packages': { bg: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#FFFFFF', border: 'rgba(245,158,11,0.5)' },
+  '/risk-analysis': { bg: 'linear-gradient(135deg, #EF4444, #DC2626)', color: '#FFFFFF', border: 'rgba(239,68,68,0.5)' },
+  '/policy-check': { bg: 'linear-gradient(135deg, #8B5CF6, #6D28D9)', color: '#FFFFFF', border: 'rgba(139,92,246,0.5)' },
+  '/ai-review': { bg: 'linear-gradient(135deg, #EC4899, #DB2777)', color: '#FFFFFF', border: 'rgba(236,72,153,0.5)' },
+  '/reports': { bg: 'linear-gradient(135deg, #06B6D4, #0891B2)', color: '#FFFFFF', border: 'rgba(6,182,212,0.5)' },
+  '/settings': { bg: 'linear-gradient(135deg, #64748B, #475569)', color: '#FFFFFF', border: 'rgba(100,116,139,0.5)' },
+};
+
 export const Sidebar: React.FC = () => {
   const location = useLocation();
   const { analyzedPackages } = useDataStore();
@@ -80,6 +91,7 @@ export const Sidebar: React.FC = () => {
               const isActive = item.exact
                 ? location.pathname === item.path
                 : location.pathname.startsWith(item.path);
+              const style = ICON_STYLES[item.path] || { bg: 'var(--bg-glass)', color: 'var(--text-secondary)', border: 'transparent' };
               return (
                 <NavLink
                   key={item.path}
@@ -87,7 +99,16 @@ export const Sidebar: React.FC = () => {
                   className={`nav-item ${isActive ? 'active' : ''}`}
                   end={item.exact}
                 >
-                  <item.icon size={18} className="nav-icon" />
+                  <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: 28, height: 28, borderRadius: 8,
+                    background: style.bg,
+                    boxShadow: `0 2px 4px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.25), 0 0 0 1px ${style.border}`,
+                    marginRight: 4,
+                    flexShrink: 0
+                  }}>
+                    <item.icon size={15} color={style.color} strokeWidth={2.5} />
+                  </div>
                   <span>{item.label}</span>
                   {item.path === '/risk-analysis' && criticalCount > 0 && (
                     <span className="nav-badge">{criticalCount}</span>

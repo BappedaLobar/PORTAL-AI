@@ -28,7 +28,7 @@
   --bg-surface: #0D1526;
   --bg-card: #111827;
   --bg-card-hover: #1A2438;
-  --bg-sidebar: #080F1E;
+  --bg-sidebar: #1E293B; /* Elegant slate gray */
   --bg-input: #0D1526;
   --bg-glass: rgba(17, 24, 39, 0.7);
   --bg-glass-light: rgba(255, 255, 255, 0.04);
@@ -95,7 +95,7 @@
   --bg-surface: #FFFFFF;
   --bg-card: #FFFFFF;
   --bg-card-hover: #F1F5F9;
-  --bg-sidebar: #F8FAFC;
+  --bg-sidebar: #F1F5F9; /* Elegant light slate gray */
   --bg-input: #FFFFFF;
   --bg-glass: rgba(255, 255, 255, 0.85);
   --bg-glass-light: rgba(0, 0, 0, 0.04);

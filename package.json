@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Aplikasi Audit Belanja Umum Pengadaan - SIRUP Analyzer",
   "private": true,
+  "type": "module",
   "workspaces": [
     "client",
     "server"

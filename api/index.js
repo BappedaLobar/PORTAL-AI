@@ -155,10 +155,10 @@ router.get('/packages', async (req, res) => {
 });
 
 router.post('/packages/bulk', async (req, res) => {
-  const { packages } = req.body;
+  const { packages, append } = req.body;
   if (!Array.isArray(packages)) return res.status(400).json({ error: 'Invalid data format' });
   try {
-    await db.execute('DELETE FROM packages');
+    if (!append) await db.execute('DELETE FROM packages');
     const statements = packages.map(p => ({
       sql: `INSERT INTO packages (namaPaket, namaSatuanKerja, caraPengadaan, metodePengadaan, jenisPengadaan, totalNilai, sumberDana, produkDalamNegeri, kodeRUP, riskScore, riskLevel, findings, recommendations, policyAlignment, summary, markupIndicators, wasteIndicators) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [p.namaPaket||null, p.namaSatuanKerja||null, p.caraPengadaan||null, p.metodePengadaan||null, p.jenisPengadaan||null, p.totalNilai||0, p.sumberDana||null, p.produkDalamNegeri||null, p.kodeRUP||null, p.riskScore||0, p.riskLevel||'NORMAL', JSON.stringify(p.findings||[]), JSON.stringify(p.recommendations||[]), p.policyAlignment||null, p.summary||null, JSON.stringify(p.markupIndicators||[]), JSON.stringify(p.wasteIndicators||[])]

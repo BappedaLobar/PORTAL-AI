@@ -104,14 +104,19 @@ export const UploadPage: React.FC = () => {
       setStats(stats);
 
       // Step 5: Persist to SQLite
-      setProgress({ status: 'scoring', progress: 95, message: 'Menyimpan data ke database permanen...' });
-      const res = await fetch('/api/packages/bulk', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packages: analyzed }),
-      });
-      if (!res.ok) {
-        throw new Error(`Gagal menyimpan ke database (Error ${res.status}). Payload mungkin terlalu besar.`);
+      setProgress({ status: 'scoring', progress: 95, message: 'Menyimpan data ke database permanen (memecah payload)...' });
+      
+      const chunkSize = 500;
+      for (let i = 0; i < analyzed.length; i += chunkSize) {
+        const chunk = analyzed.slice(i, i + chunkSize);
+        const res = await fetch('/api/packages/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ packages: chunk, append: i > 0 }),
+        });
+        if (!res.ok) {
+          throw new Error(`Gagal menyimpan ke database (Error ${res.status}). Payload mungkin terlalu besar.`);
+        }
       }
 
       setProgress({ status: 'done', progress: 100, message: 'Analisis selesai! Mengarahkan ke dashboard...' });

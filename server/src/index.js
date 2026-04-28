@@ -15,6 +15,10 @@ const db = createClient({
 
 // Initialize Database Tables
 async function initDB() {
+  if (process.env.VERCEL && !process.env.TURSO_URL) {
+    console.log('⚠️ Running on Vercel without TURSO_URL. Skipping local DB init.');
+    return;
+  }
   console.log('🔄 Initializing Database...');
   try {
     await db.execute(`

@@ -15,37 +15,43 @@ const db = createClient({
 
 // Initialize Database Tables
 async function initDB() {
-  await db.execute(`
-    CREATE TABLE IF NOT EXISTS packages (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      namaPaket TEXT,
-      namaSatuanKerja TEXT,
-      caraPengadaan TEXT,
-      metodePengadaan TEXT,
-      jenisPengadaan TEXT,
-      totalNilai REAL,
-      sumberDana TEXT,
-      produkDalamNegeri TEXT,
-      kodeRUP TEXT,
-      riskScore REAL,
-      riskLevel TEXT,
-      findings TEXT,
-      recommendations TEXT,
-      policyAlignment TEXT,
-      summary TEXT,
-      markupIndicators TEXT,
-      wasteIndicators TEXT
-    )
-  `);
+  console.log('🔄 Initializing Database...');
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS packages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        namaPaket TEXT,
+        namaSatuanKerja TEXT,
+        caraPengadaan TEXT,
+        metodePengadaan TEXT,
+        jenisPengadaan TEXT,
+        totalNilai REAL,
+        sumberDana TEXT,
+        produkDalamNegeri TEXT,
+        kodeRUP TEXT,
+        riskScore REAL,
+        riskLevel TEXT,
+        findings TEXT,
+        recommendations TEXT,
+        policyAlignment TEXT,
+        summary TEXT,
+        markupIndicators TEXT,
+        wasteIndicators TEXT
+      )
+    `);
 
-  await db.execute(`
-    CREATE TABLE IF NOT EXISTS settings (
-      id INTEGER PRIMARY KEY,
-      config TEXT
-    )
-  `);
-  
-  await db.execute(`INSERT OR IGNORE INTO settings (id, config) VALUES (1, '{}')`);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS settings (
+        id INTEGER PRIMARY KEY,
+        config TEXT
+      )
+    `);
+    
+    await db.execute(`INSERT OR IGNORE INTO settings (id, config) VALUES (1, '{}')`);
+    console.log('✅ Database Initialized Successfully');
+  } catch (err) {
+    console.error('❌ Database Initialization Failed:', err);
+  }
 }
 
 initDB().catch(console.error);
@@ -55,7 +61,8 @@ const PORT = process.env.PORT || 3001;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:4173'] }));
+// Allow all origins in production for Vercel deployment
+app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
 // AI Route Helper

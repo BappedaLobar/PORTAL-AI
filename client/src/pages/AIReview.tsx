@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, RefreshCw, Send, Search, AlertCircle, MessageSquare, ExternalLink, Loader, Zap } from 'lucide-react';
+import { Bot, RefreshCw, Send, Search, MessageSquare, ExternalLink, Loader, Zap } from 'lucide-react';
 import { useDataStore } from '../store/dataStore';
 import { usePolicyStore } from '../store/policyStore';
 import { useSettingsStore } from '../store/settingsStore';

@@ -1,0 +1,48 @@
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Layout } from './components/layout/Layout';
+import { DashboardPage } from './pages/Dashboard';
+import { UploadPage } from './pages/Upload';
+import { PackagesPage } from './pages/Packages';
+import { RiskAnalysisPage } from './pages/RiskAnalysis';
+import { PolicyCheckPage } from './pages/PolicyCheck';
+import { AIReviewPage } from './pages/AIReview';
+import { ReportsPage } from './pages/Reports';
+import { SettingsPage } from './pages/Settings';
+import { useSettingsStore } from './store/settingsStore';
+import { useDataStore } from './store/dataStore';
+import './styles/index.css';
+
+function App() {
+  const { theme } = useSettingsStore(state => state.settings);
+  const fetchSettings = useSettingsStore(state => state.fetchSettings);
+  const fetchPackages = useDataStore(state => state.fetchPackages);
+
+  useEffect(() => {
+    fetchSettings();
+    fetchPackages();
+  }, [fetchSettings, fetchPackages]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  return (
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/packages" element={<PackagesPage />} />
+          <Route path="/risk-analysis" element={<RiskAnalysisPage />} />
+          <Route path="/policy-check" element={<PolicyCheckPage />} />
+          <Route path="/ai-review" element={<AIReviewPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
+  );
+}
+
+export default App;

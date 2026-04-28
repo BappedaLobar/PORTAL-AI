@@ -202,8 +202,10 @@ function extractJSON(text, isArray = false) {
   return null;
 }
 
+const router = express.Router();
+
 // Health check
-app.get('/api/health', async (req, res) => {
+router.get('/health', async (req, res) => {
   try {
     const result = await db.execute('SELECT COUNT(*) as count FROM packages');
     res.json({ 
@@ -218,7 +220,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 // Database Endpoints
-app.get('/api/settings', async (req, res) => {
+router.get('/settings', async (req, res) => {
   try {
     const result = await db.execute('SELECT config FROM settings WHERE id = 1');
     const row = result.rows[0];
@@ -228,7 +230,7 @@ app.get('/api/settings', async (req, res) => {
   }
 });
 
-app.post('/api/settings', async (req, res) => {
+router.post('/settings', async (req, res) => {
   try {
     const configStr = JSON.stringify(req.body);
     await db.execute({
@@ -241,7 +243,7 @@ app.post('/api/settings', async (req, res) => {
   }
 });
 
-app.get('/api/packages', async (req, res) => {
+router.get('/packages', async (req, res) => {
   try {
     const result = await db.execute('SELECT * FROM packages');
     const packages = result.rows;
@@ -259,7 +261,7 @@ app.get('/api/packages', async (req, res) => {
   }
 });
 
-app.post('/api/packages/bulk', async (req, res) => {
+router.post('/packages/bulk', async (req, res) => {
   const { packages } = req.body;
   if (!Array.isArray(packages)) return res.status(400).json({ error: 'Invalid data format' });
 
@@ -308,7 +310,7 @@ app.post('/api/packages/bulk', async (req, res) => {
   }
 });
 
-app.delete('/api/packages', async (req, res) => {
+router.delete('/packages', async (req, res) => {
   try {
     await db.execute('DELETE FROM packages');
     res.json({ success: true });
@@ -318,7 +320,7 @@ app.delete('/api/packages', async (req, res) => {
 });
 
 // Analyze single package
-app.post('/api/gemini/analyze', async (req, res) => {
+router.post('/gemini/analyze', async (req, res) => {
   try {
     const { packageData, context, aiProvider, analysisInstructions, customInstructions, ...aiOptions } = req.body;
     const instructions = analysisInstructions || customInstructions;
@@ -367,7 +369,7 @@ Berikan analisis dalam format JSON berikut (pastikan valid JSON):
 });
 
 // Batch analyze multiple packages
-app.post('/api/gemini/batch', async (req, res) => {
+router.post('/gemini/batch', async (req, res) => {
   try {
     const { packages, priorities, aiProvider, analysisInstructions, customInstructions, ...aiOptions } = req.body;
     const instructions = analysisInstructions || customInstructions;
@@ -412,7 +414,7 @@ Untuk setiap paket, berikan analisis dalam format JSON array (Pastikan "detailed
 });
 
 // Generate audit report narrative
-app.post('/api/gemini/report', async (req, res) => {
+router.post('/gemini/report', async (req, res) => {
   try {
     const { summary, topRisks, instansi, period, aiProvider, reportInstructions, customInstructions, ...aiOptions } = req.body;
     const instructions = reportInstructions || customInstructions;
@@ -449,7 +451,7 @@ Format sebagai teks biasa yang formal dan profesional.`;
 });
 
 // Chat with AI about specific package or general questions
-app.post('/api/gemini/chat', async (req, res) => {
+router.post('/gemini/chat', async (req, res) => {
   console.log('💬 Incoming Chat Request');
   try {
     const { message, context, aiProvider, analysisInstructions, customInstructions, ...aiOptions } = req.body;
@@ -473,6 +475,10 @@ Jawab pertanyaan dalam Bahasa Indonesia yang jelas dan profesional.`;
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+// Mount Router to both '/' and '/api' for maximum compatibility
+app.use('/api', router);
+app.use('/', router);
 
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(PORT, () => {

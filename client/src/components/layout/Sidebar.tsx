@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Upload, Package, AlertTriangle,
-  Target, Bot, FileText, Settings, ShieldAlert, Activity
+  Target, Bot, FileText, Settings, Activity
 } from 'lucide-react';
 import { useDataStore } from '../../store/dataStore';
 

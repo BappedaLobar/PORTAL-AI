@@ -108,7 +108,12 @@ const router = express.Router();
 router.get('/health', async (req, res) => {
   try {
     const result = await db.execute('SELECT COUNT(*) as count FROM packages');
-    res.json({ status: 'ok', message: 'SIRUP Analyzer Backend Running', dbSize: result.rows[0].count });
+    res.json({ 
+      status: 'ok', 
+      message: 'SIRUP Analyzer Backend Running', 
+      dbSize: result.rows[0].count,
+      hasApiKey: !!process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here'
+    });
   } catch (error) {
     res.status(500).json({ status: 'error', error: error.message });
   }

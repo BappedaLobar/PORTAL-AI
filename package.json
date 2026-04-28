@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=server\" \"npm run dev --workspace=client\"",
-    "build": "cd client && npm install && npm run build",
+    "build": "cd client && npm install && npm run build && cd .. && mkdir -p dist && cp -r client/dist/* ./dist/",
     "start": "npm run start --workspace=server"
   },
   "dependencies": {

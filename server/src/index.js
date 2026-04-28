@@ -2,47 +2,53 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import Database from 'better-sqlite3';
+import { createClient } from '@libsql/client';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const db = new Database(path.join(__dirname, '../data.sqlite'));
+const db = createClient({
+  url: process.env.TURSO_URL || "file:data.sqlite",
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
-// Initialize Database Table
-db.exec(`
-  CREATE TABLE IF NOT EXISTS packages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    namaPaket TEXT,
-    namaSatuanKerja TEXT,
-    caraPengadaan TEXT,
-    metodePengadaan TEXT,
-    jenisPengadaan TEXT,
-    totalNilai REAL,
-    sumberDana TEXT,
-    produkDalamNegeri TEXT,
-    kodeRUP TEXT,
-    riskScore REAL,
-    riskLevel TEXT,
-    findings TEXT,
-    recommendations TEXT,
-    policyAlignment TEXT,
-    summary TEXT,
-    markupIndicators TEXT,
-    wasteIndicators TEXT
-  )
-`);
+// Initialize Database Tables
+async function initDB() {
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS packages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      namaPaket TEXT,
+      namaSatuanKerja TEXT,
+      caraPengadaan TEXT,
+      metodePengadaan TEXT,
+      jenisPengadaan TEXT,
+      totalNilai REAL,
+      sumberDana TEXT,
+      produkDalamNegeri TEXT,
+      kodeRUP TEXT,
+      riskScore REAL,
+      riskLevel TEXT,
+      findings TEXT,
+      recommendations TEXT,
+      policyAlignment TEXT,
+      summary TEXT,
+      markupIndicators TEXT,
+      wasteIndicators TEXT
+    )
+  `);
 
-// Initialize Settings Table
-db.exec(`
-  CREATE TABLE IF NOT EXISTS settings (
-    id INTEGER PRIMARY KEY,
-    config TEXT
-  )
-`);
-db.exec(`INSERT OR IGNORE INTO settings (id, config) VALUES (1, '{}')`);
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS settings (
+      id INTEGER PRIMARY KEY,
+      config TEXT
+    )
+  `);
+  
+  await db.execute(`INSERT OR IGNORE INTO settings (id, config) VALUES (1, '{}')`);
+}
+
+initDB().catch(console.error);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -190,38 +196,48 @@ function extractJSON(text, isArray = false) {
 }
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    message: 'SIRUP Analyzer Backend Running',
-    hasApiKey: !!process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here',
-    dbSize: db.prepare('SELECT COUNT(*) as count FROM packages').get().count
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    const result = await db.execute('SELECT COUNT(*) as count FROM packages');
+    res.json({ 
+      status: 'ok', 
+      message: 'SIRUP Analyzer Backend Running',
+      hasApiKey: !!process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here',
+      dbSize: result.rows[0].count
+    });
+  } catch (error) {
+    res.status(500).json({ status: 'error', error: error.message });
+  }
 });
 
 // Database Endpoints
-app.get('/api/settings', (req, res) => {
+app.get('/api/settings', async (req, res) => {
   try {
-    const row = db.prepare('SELECT config FROM settings WHERE id = 1').get();
+    const result = await db.execute('SELECT config FROM settings WHERE id = 1');
+    const row = result.rows[0];
     res.json({ success: true, settings: row && row.config ? JSON.parse(row.config) : {} });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-app.post('/api/settings', (req, res) => {
+app.post('/api/settings', async (req, res) => {
   try {
     const configStr = JSON.stringify(req.body);
-    db.prepare('UPDATE settings SET config = ? WHERE id = 1').run(configStr);
+    await db.execute({
+      sql: 'UPDATE settings SET config = ? WHERE id = 1',
+      args: [configStr]
+    });
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-app.get('/api/packages', (req, res) => {
+app.get('/api/packages', async (req, res) => {
   try {
-    const packages = db.prepare('SELECT * FROM packages').all();
+    const result = await db.execute('SELECT * FROM packages');
+    const packages = result.rows;
     // Parse JSON strings back to objects
     const parsed = packages.map(p => ({
       ...p,
@@ -236,59 +252,58 @@ app.get('/api/packages', (req, res) => {
   }
 });
 
-app.post('/api/packages/bulk', (req, res) => {
+app.post('/api/packages/bulk', async (req, res) => {
   const { packages } = req.body;
   if (!Array.isArray(packages)) return res.status(400).json({ error: 'Invalid data format' });
 
-  const insert = db.prepare(`
-    INSERT INTO packages (
-      namaPaket, namaSatuanKerja, caraPengadaan, metodePengadaan, jenisPengadaan, 
-      totalNilai, sumberDana, produkDalamNegeri, kodeRUP, riskScore, riskLevel, 
-      findings, recommendations, policyAlignment, summary, markupIndicators, wasteIndicators
-    ) VALUES (
-      @namaPaket, @namaSatuanKerja, @caraPengadaan, @metodePengadaan, @jenisPengadaan, 
-      @totalNilai, @sumberDana, @produkDalamNegeri, @kodeRUP, @riskScore, @riskLevel, 
-      @findings, @recommendations, @policyAlignment, @summary, @markupIndicators, @wasteIndicators
-    )
-  `);
-
-  const insertMany = db.transaction((pkgs) => {
-    for (const p of pkgs) {
-      insert.run({
-        namaPaket: p.namaPaket || null,
-        namaSatuanKerja: p.namaSatuanKerja || null,
-        caraPengadaan: p.caraPengadaan || null,
-        metodePengadaan: p.metodePengadaan || null,
-        jenisPengadaan: p.jenisPengadaan || null,
-        totalNilai: p.totalNilai || 0,
-        sumberDana: p.sumberDana || null,
-        produkDalamNegeri: p.produkDalamNegeri || null,
-        kodeRUP: p.kodeRUP || null,
-        riskScore: p.riskScore || 0,
-        riskLevel: p.riskLevel || 'NORMAL',
-        findings: JSON.stringify(p.findings || []),
-        recommendations: JSON.stringify(p.recommendations || []),
-        policyAlignment: p.policyAlignment || null,
-        summary: p.summary || null,
-        markupIndicators: JSON.stringify(p.markupIndicators || []),
-        wasteIndicators: JSON.stringify(p.wasteIndicators || [])
-      });
-    }
-  });
-
   try {
     // Clear old data first
-    db.prepare('DELETE FROM packages').run();
-    insertMany(packages);
+    await db.execute('DELETE FROM packages');
+
+    // Prepare batch statements
+    const statements = packages.map(p => ({
+      sql: `INSERT INTO packages (
+        namaPaket, namaSatuanKerja, caraPengadaan, metodePengadaan, jenisPengadaan, 
+        totalNilai, sumberDana, produkDalamNegeri, kodeRUP, riskScore, riskLevel, 
+        findings, recommendations, policyAlignment, summary, markupIndicators, wasteIndicators
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [
+        p.namaPaket || null,
+        p.namaSatuanKerja || null,
+        p.caraPengadaan || null,
+        p.metodePengadaan || null,
+        p.jenisPengadaan || null,
+        p.totalNilai || 0,
+        p.sumberDana || null,
+        p.produkDalamNegeri || null,
+        p.kodeRUP || null,
+        p.riskScore || 0,
+        p.riskLevel || 'NORMAL',
+        JSON.stringify(p.findings || []),
+        JSON.stringify(p.recommendations || []),
+        p.policyAlignment || null,
+        p.summary || null,
+        JSON.stringify(p.markupIndicators || []),
+        JSON.stringify(p.wasteIndicators || [])
+      ]
+    }));
+
+    // Execute in batches of 100 to avoid limits
+    for (let i = 0; i < statements.length; i += 100) {
+      const chunk = statements.slice(i, i + 100);
+      await db.batch(chunk, "write");
+    }
+
     res.json({ success: true, count: packages.length });
   } catch (error) {
+    console.error('Bulk Insert Error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-app.delete('/api/packages', (req, res) => {
+app.delete('/api/packages', async (req, res) => {
   try {
-    db.prepare('DELETE FROM packages').run();
+    await db.execute('DELETE FROM packages');
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -452,7 +467,10 @@ Jawab pertanyaan dalam Bahasa Indonesia yang jelas dan profesional.`;
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ SIRUP Analyzer Backend running on http://localhost:${PORT}`);
-  console.log(`🔑 Gemini API Key: ${process.env.GEMINI_API_KEY ? 'Configured ✓' : 'NOT SET ✗'}`);
-});
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`✅ SIRUP Analyzer Backend running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

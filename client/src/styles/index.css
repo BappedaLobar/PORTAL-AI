@@ -254,6 +254,8 @@ a:hover { opacity: 0.8; }
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
+  padding-right: 56px;
+  line-height: 1.3;
 }
 
 .kpi-value {
@@ -262,6 +264,8 @@ a:hover { opacity: 0.8; }
   color: var(--text-primary);
   line-height: 1;
   margin-bottom: 6px;
+  padding-right: 56px;
+  word-break: break-word;
 }
 
 .kpi-sub {

@@ -130,7 +130,7 @@ export const DashboardPage: React.FC = () => {
     return (
       <div className="animate-fade-in">
         <div className="page-header">
-          <h1>Dashboard Audit</h1>
+          <h1>Dashboard Utama</h1>
           <p>Analisis risiko belanja pengadaan daerah</p>
         </div>
         <div className="empty-state">
@@ -152,7 +152,7 @@ export const DashboardPage: React.FC = () => {
       {/* Header */}
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <h1>Dashboard Audit</h1>
+          <h1>Dashboard Utama</h1>
           <p style={{ marginTop: 4 }}>
             {fileName} · Dianalisis: {stats?.analyzedAt && new Date(stats.analyzedAt).toLocaleString('id-ID')}
           </p>

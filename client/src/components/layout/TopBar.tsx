@@ -5,7 +5,7 @@ import { useDataStore } from '../../store/dataStore';
 import { useSettingsStore } from '../../store/settingsStore';
 
 const PAGE_TITLES: Record<string, string> = {
-  '/': 'Dashboard Audit',
+  '/': 'Dashboard Utama',
   '/upload': 'Upload Data RUP',
   '/packages': 'Semua Paket',
   '/risk-analysis': 'Analisis Risiko',

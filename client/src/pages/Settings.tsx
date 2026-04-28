@@ -133,9 +133,8 @@ export const SettingsPage: React.FC = () => {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                      message: 'Halo, apakah koneksi Anda lancar? Jawab dengan: "Koneksi OK"',
-                      aiProvider: settings.aiProvider,
-                      ...settings
+                      ...settings,
+                      message: 'Halo, apakah koneksi Anda lancar? Jawab dengan: "Koneksi OK"'
                     })
                   });
                   const data = await res.json();

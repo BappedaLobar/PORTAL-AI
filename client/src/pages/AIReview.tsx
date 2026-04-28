@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, RefreshCw, Send, Settings, Search, Check, AlertCircle, FileText, Download, Play, Save, ChevronDown, ChevronRight, MessageSquare, Briefcase, ExternalLink, Loader, Zap } from 'lucide-react';
+import { Bot, RefreshCw, Send, Search, AlertCircle, MessageSquare, ExternalLink, Loader, Zap } from 'lucide-react';
 import { useDataStore } from '../store/dataStore';
 import { usePolicyStore } from '../store/policyStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -85,7 +85,7 @@ export const AIReviewPage: React.FC = () => {
   const navigate = useNavigate();
   const { analyzedPackages, stats } = useDataStore();
   const { priorities } = usePolicyStore();
-  const { settings, updateSettings } = useSettingsStore();
+  const { settings } = useSettingsStore();
 
   const [activeTab, setActiveTab] = useState<'batch' | 'single' | 'chat'>('batch');
   const [activePresetId, setActivePresetId] = useState<string | null>(null);

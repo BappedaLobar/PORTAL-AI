@@ -272,13 +272,16 @@ a:hover { opacity: 0.8; }
 .kpi-icon {
   position: absolute;
   top: 16px; right: 16px;
-  width: 40px; height: 40px;
-  border-radius: var(--radius-md);
+  width: 44px; height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--kpi-accent-bg, rgba(59,130,246,0.15));
-  color: var(--kpi-accent, var(--color-primary));
+  background: var(--kpi-accent, var(--color-primary));
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px var(--kpi-accent-bg, rgba(0,0,0,0.15)), 
+              inset 0 2px 2px rgba(255,255,255,0.25), 
+              inset 0 -2px 4px rgba(0,0,0,0.15);
 }
 
 /* ===== RISK BADGES ===== */
@@ -493,13 +496,16 @@ tbody td.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellips
 
 .drop-zone-icon {
   width: 64px; height: 64px;
-  background: rgba(59,130,246,0.12);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
-  color: var(--color-primary);
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(59,130,246,0.25), 
+              inset 0 3px 3px rgba(255,255,255,0.25), 
+              inset 0 -3px 6px rgba(0,0,0,0.15);
   transition: transform var(--transition-base);
 }
 
@@ -707,13 +713,17 @@ tbody td.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellips
 
 .empty-state-icon {
   width: 80px; height: 80px;
-  background: var(--bg-glass-light);
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-surface));
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
-  margin-bottom: 8px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1), 
+              inset 0 2px 2px rgba(255,255,255,0.05), 
+              inset 0 -2px 4px rgba(0,0,0,0.15);
+  border: 1px solid var(--border-color);
 }
 
 /* ===== ANIMATIONS ===== */

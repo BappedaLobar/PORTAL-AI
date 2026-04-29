@@ -9,9 +9,9 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const isStoryboard = location.pathname === '/storyboard';
+  const isSpecialPage = ['/intro', '/storyboard'].includes(location.pathname);
 
-  if (isStoryboard) {
+  if (isSpecialPage) {
     return <>{children}</>;
   }
 

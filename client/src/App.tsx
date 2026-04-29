@@ -10,27 +10,29 @@ import { AIReviewPage } from './pages/AIReview';
 import { ReportsPage } from './pages/Reports';
 import { SettingsPage } from './pages/Settings';
 import { StoryboardPage } from './pages/Storyboard';
+import { IntroPage } from './pages/Intro';
 import { useSettingsStore } from './store/settingsStore';
 import { useDataStore } from './store/dataStore';
 import './styles/index.css';
 
 // Separate component for route handling to use useLocation
 const AppRoutes = () => {
-  const [shouldShowStoryboard, setShouldShowStoryboard] = useState<boolean | null>(null);
+  const [shouldShowIntro, setShouldShowIntro] = useState<boolean | null>(null);
 
   useEffect(() => {
     const seen = localStorage.getItem('storyboard_seen');
-    setShouldShowStoryboard(!seen);
+    setShouldShowIntro(!seen);
   }, []);
 
-  if (shouldShowStoryboard === null) return null;
+  if (shouldShowIntro === null) return null;
 
   return (
     <Routes>
       <Route 
         path="/" 
-        element={shouldShowStoryboard ? <Navigate to="/storyboard" replace /> : <DashboardPage />} 
+        element={shouldShowIntro ? <Navigate to="/intro" replace /> : <DashboardPage />} 
       />
+      <Route path="/intro" element={<IntroPage />} />
       <Route path="/storyboard" element={<StoryboardPage />} />
       <Route path="/upload" element={<UploadPage />} />
       <Route path="/packages" element={<PackagesPage />} />

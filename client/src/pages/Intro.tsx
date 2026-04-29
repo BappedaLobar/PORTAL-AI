@@ -1,17 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 
 export const IntroPage: React.FC = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate('/storyboard');
-    }, 8000); // 8 seconds fallback for the intro animation
-
-    return () => clearTimeout(timer);
-  }, [navigate]);
 
   return (
     <div className="intro-page-wrapper">
@@ -208,7 +200,7 @@ export const IntroPage: React.FC = () => {
             BAPPERIDA
           </h1>
           <div className="divider-intro"></div>
-          <h2 className="subtitle-intro mb-10">
+          <h2 className="subtitle-intro mb-20">
             Kabupaten Lombok Barat
           </h2>
 

@@ -10,7 +10,7 @@ const NAV_ITEMS = [
   {
     section: 'Utama',
     items: [
-      { path: '/', icon: LayoutDashboard, label: 'Dashboard', exact: true },
+      { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', exact: true },
       { path: '/upload', icon: Upload, label: 'Upload Data RUP' },
     ]
   },
@@ -33,7 +33,7 @@ const NAV_ITEMS = [
 ];
 
 const ICON_STYLES: Record<string, { bg: string, color: string, border: string }> = {
-  '/': { bg: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#FFFFFF', border: 'rgba(59,130,246,0.5)' },
+  '/dashboard': { bg: 'linear-gradient(135deg, #3B82F6, #2563EB)', color: '#FFFFFF', border: 'rgba(59,130,246,0.5)' },
   '/upload': { bg: 'linear-gradient(135deg, #10B981, #059669)', color: '#FFFFFF', border: 'rgba(16,185,129,0.5)' },
   '/packages': { bg: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#FFFFFF', border: 'rgba(245,158,11,0.5)' },
   '/risk-analysis': { bg: 'linear-gradient(135deg, #EF4444, #DC2626)', color: '#FFFFFF', border: 'rgba(239,68,68,0.5)' },

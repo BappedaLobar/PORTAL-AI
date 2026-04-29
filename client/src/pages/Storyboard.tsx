@@ -47,9 +47,8 @@ export const StoryboardPage: React.FC = () => {
 
   const handleComplete = () => {
     setIsExiting(true);
-    localStorage.setItem('storyboard_seen', 'true');
     setTimeout(() => {
-      navigate('/');
+      navigate('/dashboard');
     }, 500);
   };
 

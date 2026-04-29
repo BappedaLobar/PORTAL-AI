@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { DashboardPage } from './pages/Dashboard';
@@ -17,23 +17,12 @@ import './styles/index.css';
 
 // Separate component for route handling to use useLocation
 const AppRoutes = () => {
-  const [shouldShowIntro, setShouldShowIntro] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const seen = localStorage.getItem('storyboard_seen');
-    setShouldShowIntro(!seen);
-  }, []);
-
-  if (shouldShowIntro === null) return null;
-
   return (
     <Routes>
-      <Route 
-        path="/" 
-        element={shouldShowIntro ? <Navigate to="/intro" replace /> : <DashboardPage />} 
-      />
+      <Route path="/" element={<Navigate to="/intro" replace />} />
       <Route path="/intro" element={<IntroPage />} />
       <Route path="/storyboard" element={<StoryboardPage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/upload" element={<UploadPage />} />
       <Route path="/packages" element={<PackagesPage />} />
       <Route path="/risk-analysis" element={<RiskAnalysisPage />} />

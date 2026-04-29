@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LogIn } from 'lucide-react';
 
 export const IntroPage: React.FC = () => {
   const navigate = useNavigate();
@@ -7,7 +8,7 @@ export const IntroPage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate('/storyboard');
-    }, 4500); // 4.5 seconds for the full intro animation
+    }, 8000); // 8 seconds fallback for the intro animation
 
     return () => clearTimeout(timer);
   }, [navigate]);
@@ -126,6 +127,63 @@ export const IntroPage: React.FC = () => {
           text-transform: uppercase;
           margin-bottom: 1.5rem;
         }
+
+        .enter-button-intro {
+          position: relative;
+          padding: 12px 32px;
+          background: rgba(59, 130, 246, 0.1);
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          border-radius: 9999px;
+          color: #60a5fa;
+          font-weight: 600;
+          letter-spacing: 0.2em;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          overflow: hidden;
+          opacity: 0;
+          animation: fade-up-intro 1s ease-out 2.5s forwards;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto;
+        }
+
+        .enter-button-intro:hover {
+          background: rgba(59, 130, 246, 0.2);
+          border-color: #60a5fa;
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .enter-button-content {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .enter-button-glow {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+          transform: translateX(-100%);
+          transition: transform 0.5s ease;
+        }
+
+        .enter-button-intro:hover .enter-button-glow {
+          transform: translateX(100%);
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
+          50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
+        }
+
+        .enter-button-intro {
+          animation: fade-up-intro 1s ease-out 2.5s forwards, pulse-glow 2s infinite 3.5s;
+        }
       `}</style>
       
       <div className="ambient-light"></div>
@@ -150,9 +208,20 @@ export const IntroPage: React.FC = () => {
             BAPPERIDA
           </h1>
           <div className="divider-intro"></div>
-          <h2 className="subtitle-intro">
+          <h2 className="subtitle-intro mb-10">
             Kabupaten Lombok Barat
           </h2>
+
+          <button 
+            className="enter-button-intro group"
+            onClick={() => navigate('/storyboard')}
+          >
+            <div className="enter-button-content">
+              <span className="enter-text">ENTER</span>
+              <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <div className="enter-button-glow"></div>
+          </button>
         </div>
       </div>
     </div>

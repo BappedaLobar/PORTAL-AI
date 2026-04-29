@@ -16,7 +16,6 @@ import './styles/index.css';
 
 // Separate component for route handling to use useLocation
 const AppRoutes = () => {
-  const location = useLocation();
   const [shouldShowStoryboard, setShouldShowStoryboard] = useState<boolean | null>(null);
 
   useEffect(() => {

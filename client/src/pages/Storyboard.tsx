@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, ChevronLeft, Play, Activity, Shield, BarChart, Zap } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Play, Activity, Shield, BarChart } from 'lucide-react';
 
 const slides = [
   {

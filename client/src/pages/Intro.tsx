@@ -143,7 +143,7 @@ export const IntroPage: React.FC = () => {
           background: rgba(59, 130, 246, 0.2);
           border-color: #60a5fa;
           color: white;
-          transform: translateX(-50%) translateY(-5px) !important;
+          transform: translateY(-5px);
           box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
         }
 
@@ -204,17 +204,18 @@ export const IntroPage: React.FC = () => {
           </h2>
         </div>
 
-        <button 
-          className="enter-button-intro group"
-          onClick={() => navigate('/storyboard')}
-          style={{ position: 'absolute', bottom: '60px', left: '50%', transform: 'translateX(-50%)' }}
-        >
-          <div className="enter-button-content">
-            <span className="enter-text">ENTER</span>
-            <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </div>
-          <div className="enter-button-glow"></div>
-        </button>
+        <div style={{ position: 'absolute', bottom: '60px', left: '50%', transform: 'translateX(-50%)', zIndex: 20 }}>
+          <button 
+            className="enter-button-intro group"
+            onClick={() => navigate('/storyboard')}
+          >
+            <div className="enter-button-content">
+              <span className="enter-text">ENTER</span>
+              <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <div className="enter-button-glow"></div>
+          </button>
+        </div>
       </div>
     </div>
   );

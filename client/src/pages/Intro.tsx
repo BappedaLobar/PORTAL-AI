@@ -137,15 +137,14 @@ export const IntroPage: React.FC = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto;
         }
 
         .enter-button-intro:hover {
           background: rgba(59, 130, 246, 0.2);
           border-color: #60a5fa;
           color: white;
-          transform: translateY(-2px);
-          box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+          transform: translateX(-50%) translateY(-5px) !important;
+          box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
         }
 
         .enter-button-content {
@@ -200,21 +199,22 @@ export const IntroPage: React.FC = () => {
             BAPPERIDA
           </h1>
           <div className="divider-intro"></div>
-          <h2 className="subtitle-intro mb-20">
+          <h2 className="subtitle-intro">
             Kabupaten Lombok Barat
           </h2>
-
-          <button 
-            className="enter-button-intro group"
-            onClick={() => navigate('/storyboard')}
-          >
-            <div className="enter-button-content">
-              <span className="enter-text">ENTER</span>
-              <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </div>
-            <div className="enter-button-glow"></div>
-          </button>
         </div>
+
+        <button 
+          className="enter-button-intro group"
+          onClick={() => navigate('/storyboard')}
+          style={{ position: 'absolute', bottom: '60px', left: '50%', transform: 'translateX(-50%)' }}
+        >
+          <div className="enter-button-content">
+            <span className="enter-text">ENTER</span>
+            <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </div>
+          <div className="enter-button-glow"></div>
+        </button>
       </div>
     </div>
   );
